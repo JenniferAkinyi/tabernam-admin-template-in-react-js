@@ -7,6 +7,9 @@ import MoonIcon from "./assets/icons/moon.svg";
 import SunIcon from "./assets/icons/sun.svg";
 import BaseLayout from "./layout/BaseLayout";
 import { Dashboard, PageNotFound } from "./screens";
+import Products from "./components/Products/Products";
+import Update from "./components/Update/Update";
+import AddProduct from "./components/AddProduct/AddProduct";
 
 function App() {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -27,6 +30,9 @@ function App() {
           <Route element={<BaseLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="*" element={<PageNotFound />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/update/:id" element={<Update/>} />
+            <Route path="/addproduct" element={<AddProduct/>} />
           </Route>
         </Routes>
 

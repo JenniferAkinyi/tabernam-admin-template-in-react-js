@@ -27,7 +27,7 @@
 
 // color mode toggle mixins
 @mixin lightMode {
-  --primary-color: #475be8;
+  --primary-color: #4CAF50 ;
   --secondary-color: #fff;
   --background-color: #fafafa;
   --side-link-hover-color: #f6f6f6;
@@ -49,7 +49,7 @@
 }
 
 @mixin darkMode {
-  --primary-color: #475be8;
+  --primary-color: #4CAF50 ;
   --secondary-color: #2e2e48;
   --background-color: #383854;
   --side-link-hover-color: #525270;

@@ -1,0 +1,113 @@
+.products{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-height: 90vh;
+    padding-bottom: 50px;
+}
+
+.search-bar {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 200px;
+}
+   
+.products h1{
+    color: #171717;
+    font-size: 50px;
+    font-weight: 600;
+}
+.add-product-button {
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+}
+  
+.add-product-button:hover {
+    background-color: darkgreen;
+}
+.collections{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%; 
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 20px;
+    justify-content: center;
+}
+.product-item {
+    flex: 1 1 250px;
+    width: calc(25% - 20px);  /* Four items in a row */
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    border: 1px solid #ddd; /* Border around each item */
+    border-radius: 5px; /* Slightly rounded corners */
+    padding: 16px; /* Space inside the border */
+    width: 250px;
+    text-align: center;
+    background-color: #fff; /* White background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+    transition: box-shadow 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.product-item:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+}
+.product-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+.product-item h2 {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #333;
+}
+.product-item p {
+    margin: 5px 0;
+    font-size: 13px;
+    color: #555;
+}
+
+/* Responsive Styles */
+
+  
+  /* For mobile devices */
+  @media (max-width: 480px) {
+    .collections {
+      gap: 10px;
+    }
+  
+    .product-item {
+      width: 100%; 
+    }
+  
+    .product-item h2 {
+      font-size: 16px;
+    }
+  
+    .product-item p {
+      font-size: 14px;
+    }
+  
+    form {
+      padding: 15px;
+    }
+  
+    form input, form button {
+      padding: 8px;
+    }
+  
+    form button {
+      font-size: 14px;
+    }
+  }
