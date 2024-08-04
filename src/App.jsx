@@ -10,6 +10,13 @@ import { Dashboard, PageNotFound } from "./screens";
 import Products from "./components/Products/Products";
 import Update from "./components/Update/Update";
 import AddProduct from "./components/AddProduct/AddProduct";
+import Login from "./components/Authentication/Login";
+import Signup from "./components/Authentication/Signup";
+import Orders from "./components/Orders/Orders";
+import Announcement from "./components/Announcement/Announcement";
+import Processing from "./components/Processing/Processing";
+
+
 
 function App() {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -33,6 +40,11 @@ function App() {
             <Route path="/products" element={<Products />} />
             <Route path="/update/:id" element={<Update/>} />
             <Route path="/addproduct" element={<AddProduct/>} />
+            <Route path="/login" element={<Login/>} />
+            <Route path="/signup" element={<Signup/>} />
+            <Route path="/orders" element={<Orders/>} />
+            <Route path="/announcement" element={<Announcement/>} />
+            <Route path="/processing" element={<Processing/>} />
           </Route>
         </Routes>
 

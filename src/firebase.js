@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
-
+import { getAuth } from "firebase/auth";
 import {getStorage, ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -34,4 +34,5 @@ const uploadImage = async (file) => {
 };
 
 // Initialize Firebase Authentication and get a reference to the service
-export { db, storage, uploadImage };
+const auth = getAuth(app);
+export { auth, db, storage, uploadImage };

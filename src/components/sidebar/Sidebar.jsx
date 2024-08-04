@@ -1,8 +1,6 @@
 import { useContext, useEffect, useRef } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
-import { LIGHT_THEME } from "../../constants/themeConstants";
-import LogoBlue from "../../assets/images/logo_blue.svg";
-import LogoWhite from "../../assets/images/logo_white.svg";
+
 import {
   MdOutlineAttachMoney,
   MdOutlineBarChart,
@@ -10,18 +8,21 @@ import {
   MdOutlineCurrencyExchange,
   MdOutlineGridView,
   MdOutlineLogout,
+  MdOutlineLogin,
   MdOutlineMessage,
   MdOutlinePeople,
   MdOutlineSettings,
   MdOutlineShoppingBag,
 } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Sidebar.scss";
 import { SidebarContext } from "../../context/SidebarContext";
 
 const Sidebar = () => {
   const { theme } = useContext(ThemeContext);
+  const naviagte = useNavigate();
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext);
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
   const navbarRef = useRef(null);
 
   // closing the navbar when clicked outside the sidebar area
@@ -34,6 +35,12 @@ const Sidebar = () => {
       closeSidebar();
     }
   };
+  
+  const handleLogout = () => {
+    //logout logic here
+    console.log('logging out');
+    naviagte('/login');
+  }
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -100,7 +107,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/" className="menu-link">
+              <Link to="/orders" className="menu-link">
                 <span className="menu-link-icon">
                   <MdOutlinePeople size={20} />
                 </span>
@@ -108,11 +115,11 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/" className="menu-link">
+              <Link to="/announcement" className="menu-link">
                 <span className="menu-link-icon">
                   <MdOutlineMessage size={18} />
                 </span>
-                <span className="menu-link-text">Messages</span>
+                <span className="menu-link-text">Announcement</span>
               </Link>
             </li>
           </ul>
@@ -128,13 +135,24 @@ const Sidebar = () => {
                 <span className="menu-link-text">Settings</span>
               </Link>
             </li>
+
+            
             <li className="menu-item">
-              <Link to="/" className="menu-link">
-                <span className="menu-link-icon">
-                  <MdOutlineLogout size={20} />
-                </span>
-                <span className="menu-link-text">Logout</span>
-              </Link>
+              {isLoggedIn ? (
+                <Link to="/login" onClick={handleLogout} className="menu-link">
+                  <span className="menu-link-icon">
+                    <MdOutlineLogout size={20} />
+                  </span>
+                  <span className="menu-link-text">Logout</span>
+                </Link>
+              ) : (
+                <Link to="/login" className="menu-link">
+                  <span className="menu-link-icon">
+                    <MdOutlineLogin size={20} />
+                  </span>
+                  <span className="menu-link-text">Login</span>
+                </Link>
+              )}
             </li>
           </ul>
         </div>
