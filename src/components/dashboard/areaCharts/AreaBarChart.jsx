@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -11,58 +11,37 @@ import {
 import { ThemeContext } from "../../../context/ThemeContext";
 import { FaArrowUpLong } from "react-icons/fa6";
 import { LIGHT_THEME } from "../../../constants/themeConstants";
+import { db } from '../../../firebase'; 
+import { collection, getDocs } from 'firebase/firestore';
 import "./AreaCharts.scss";
-
-const data = [
-  {
-    month: "Jan",
-    loss: 70,
-    profit: 100,
-  },
-  {
-    month: "Feb",
-    loss: 55,
-    profit: 85,
-  },
-  {
-    month: "Mar",
-    loss: 35,
-    profit: 90,
-  },
-  {
-    month: "April",
-    loss: 90,
-    profit: 70,
-  },
-  {
-    month: "May",
-    loss: 55,
-    profit: 80,
-  },
-  {
-    month: "Jun",
-    loss: 30,
-    profit: 50,
-  },
-  {
-    month: "Jul",
-    loss: 32,
-    profit: 75,
-  },
-  {
-    month: "Aug",
-    loss: 62,
-    profit: 86,
-  },
-  {
-    month: "Sep",
-    loss: 55,
-    profit: 78,
-  },
-];
 
 const AreaBarChart = () => {
   const { theme } = useContext(ThemeContext);
+  const [ totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Reference to the collection in Firestore
+        const productsRef = collection(db, 'SalesReport','2024-06-17', 'Items');
+        const productsSnapshot = await getDocs(productsRef);
+
+        // Sum all soldQuantity values
+        const totalPrice = productsSnapshot.docs.reduce((total, doc) => {
+          const data = doc.data();
+          // Convert soldQuantity to a number
+          const price = Number(data.totalPrice) || 0;
+          return total + price;
+          }, 0);
+
+        setTotalPrice(totalPrice);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const formatTooltipValue = (value) => {
     return `${value}k`;
@@ -76,12 +55,63 @@ const AreaBarChart = () => {
     return value.charAt(0).toUpperCase() + value.slice(1);
   };
 
+  const data = [
+    {
+      month: "Jan",
+      totalPrice: '',
+    },
+    {
+      month: "Feb",
+      totalPrice: '',
+    },
+    {
+      month: "Mar",
+      totalPrice: '',
+    },
+    {
+      month: "Apr",
+      totalPrice: '',
+    },
+    {
+      month: "May",
+      totalPrice: '',
+    },
+    {
+      month: "Jun",
+      totalPrice: totalPrice,
+    },
+    {
+      month: "Jul",
+      totalPrice: '',
+    },
+    {
+      month: "Aug",
+      totalPrice: totalPrice,
+    },
+    {
+      month: "Sep",
+      totalPrice: '',
+    },
+    {
+      month: "Oct",
+      totalPrice: '',
+    },
+    {
+      month: "Nov",
+      totalPrice: '',
+    },
+    {
+      month: "Dec",
+      totalPrice: '',
+    },
+  ]
+
   return (
     <div className="bar-chart">
       <div className="bar-chart-info">
         <h5 className="bar-chart-title">Total Revenue</h5>
         <div className="chart-info-data">
-          <div className="info-data-value">$50.4K</div>
+          <div className="info-data-value">{`Ksh.${totalPrice}`}</div>
           <div className="info-data-text">
             <FaArrowUpLong />
             <p>5% than last month.</p>
@@ -133,8 +163,8 @@ const AreaBarChart = () => {
               formatter={formatLegendValue}
             />
             <Bar
-              dataKey="profit"
-              fill="#475be8"
+              dataKey="totalPrice"
+              fill="green"
               activeBar={false}
               isAnimationActive={false}
               barSize={24}

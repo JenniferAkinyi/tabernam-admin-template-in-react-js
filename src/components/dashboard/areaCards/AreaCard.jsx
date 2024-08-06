@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import PropTypes from "prop-types";
 import {
   PieChart,
@@ -5,9 +6,38 @@ import {
   Cell,
   Tooltip,
 } from "recharts";
+import { db } from '../../../firebase'; 
+import { collection, getDocs } from 'firebase/firestore';
+
 
 const AreaCard = ({ colors, percentFillValue, cardInfo }) => {
-  const filledValue = (percentFillValue / 100) * 360; // 360 degress for a full circle
+  const [ quantity, setQuantity ] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Reference to the collection in Firestore
+        const productsRef = collection(db, 'Products', 'Fertilizer', 'Available');
+        const productsSnapshot = await getDocs(productsRef);
+
+        // Sum all soldQuantity values
+        const quantity = productsSnapshot.docs.reduce((total, doc) => {
+          const data = doc.data();
+          // Convert soldQuantity to a number
+          const quantity = Number(data.quantity) || 0;
+          return total + quantity;
+          }, 0);
+
+        setQuantity(quantity);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const filledValue = (percentFillValue / `${quantity}`) * 360; // 360 degress for a full circle
   const remainedValue = 360 - filledValue;
 
   const data = [

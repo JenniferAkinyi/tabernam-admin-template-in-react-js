@@ -1,31 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../firebase'; // Ensure you import your Firebase config
-import { collection, getDocs } from 'firebase/firestore';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { db } from '../../firebase';
+import { doc, getDoc, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
 import './Processing.css';
 
 const Processing = () => {
-  const [orders, setOrders] = useState([]);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [delivery, setDelivery] = useState([]);
+  const [selectedDelivery, setSelectedDelivery] = useState('');
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchOrder = async () => {
       try {
-        // Reference to the orders collection
-        const ordersRef = collection(db, 'Orders', 'Customer', 'order');
-        const ordersSnapshot = await getDocs(ordersRef);
-        const ordersList = ordersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setOrders(ordersList);
+        const orderRef = doc(db, 'Orders', 'Customer', 'order', id);
+        const orderSnapshot = await getDoc(orderRef);
+        if (orderSnapshot.exists()) {
+          const orderData = { id: orderSnapshot.id, ...orderSnapshot.data() };
+          setOrder(orderData);
+          autoSelectDelivery(orderData.orderAddress);
+        } else {
+          setError('Order not found');
+        }
       } catch (error) {
-        console.error('Error fetching orders:', error);
-        setError('Failed to load orders. Please try again.');
+        console.error('Error fetching order:', error);
+        setError('Failed to load order. Please try again.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchOrders();
-  }, []);
+    const fetchDelivery = async () => {
+      try {
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('roleValue', '==', 'Delivery'));
+        const querySnapshot = await getDocs(q);
+        const usersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setDelivery(usersList);
+      } catch (error) {
+        console.error('Error fetching delivery users:', error);
+        setError('Failed to load delivery users. Please try again.');
+      }
+    };
+
+    fetchOrder();
+    fetchDelivery();
+  }, [id]);
+
+  const autoSelectDelivery = (orderAddress) => {
+    if (!orderAddress) return;
+    const matchedUser = delivery.find(user => user.location && user.location.toLowerCase() === orderAddress.toLowerCase());
+    if (matchedUser) {
+      setSelectedDelivery(matchedUser.email);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedDelivery) {
+      setError('Please select a delivery user.');
+      return;
+    }
+
+    try {
+      const orderRef = doc(db, 'Orders', 'Customer', 'order', id);
+      await updateDoc(orderRef, { distributor: selectedDelivery, served: '2' }); // Convert `served` to string
+      navigate('/orders'); // Redirect to orders page after updating
+    } catch (error) {
+      console.error('Error updating order:', error);
+      setError('Failed to update order. Please try again.');
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -38,8 +86,8 @@ const Processing = () => {
   return (
     <div className="processing-container">
       <h1>Order Processing</h1>
-      {orders.map(order => (
-        <form key={order.id} className="order-form">
+      {order && (
+        <form key={order.id} className="order-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Email Address:</label>
             <input type="email" value={order.emailAddress} readOnly />
@@ -57,11 +105,24 @@ const Processing = () => {
             <input type="text" value={order.paymentNumber} readOnly />
           </div>
           <div className="form-group">
-            <label>Distributor:</label>
-            <input type="text" value={order.distributor} readOnly />
+            <label>Delivery:</label>
+            <select 
+              name="deliveryUser" 
+              value={selectedDelivery} 
+              onChange={(e) => setSelectedDelivery(e.target.value)} 
+              required
+            >
+              <option value="">Select Delivery User</option>
+              {delivery.map(user => (
+                <option key={user.id} value={user.email}>
+                  {user.email}
+                </option>
+              ))}
+            </select>
           </div>
+          <button type="submit">Submit</button>
         </form>
-      ))}
+      )}
     </div>
   );
 };

@@ -69,7 +69,7 @@ const AreaTable = () => {
                   <td>{order.emailAddress}</td>
                   <td>{order.paymentNumber}</td>
                   <td className="dt-cell-action">
-                    <AreaTableAction />
+                    <AreaTableAction orderId={order.id}/>
                   </td>
                 </tr>
               );

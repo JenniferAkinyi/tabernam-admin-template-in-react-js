@@ -14,16 +14,16 @@ const AddProduct = () => {
     quantity: "",
     category: "",
     description: "",
-    soldQuantity: 0
+    soldQuantity: "0"
   });
   const navigate = useNavigate();
   const storage = getStorage();
 
   useEffect(() => {
-    const fetchCategories = async() => {
-        const querySnapshot = await getDocs(collection(db, "Products/Fertilizer/Categories"));
-        const categoriesList = querySnapshot.docs.map(doc => doc.data().name);
-        setCategories(categoriesList)
+    const fetchCategories = async () => {
+      const querySnapshot = await getDocs(collection(db, "Products/Fertilizer/Categories"));
+      const categoriesList = querySnapshot.docs.map(doc => doc.data().name);
+      setCategories(categoriesList);
     };
     fetchCategories();
   }, []);
@@ -33,7 +33,7 @@ const AddProduct = () => {
   };
 
   const handleInputChange = (e) => {
-    setNewProduct({ ...newProduct, [e.target.name]: e.target.value });
+    setNewProduct({ ...newProduct, [e.target.name]: e.target.value.toString() });
   };
 
   const uploadImage = async (file) => {
@@ -46,10 +46,10 @@ const AddProduct = () => {
   const saveProductWithImage = async () => {
     const imageUrl = await uploadImage(selectedFile);
     const newProductRef = doc(collection(db, "Products/Fertilizer/Available"));
-    const productWithImage = { 
-        ...newProduct, 
-        image: imageUrl,
-        itemId: newProductRef.id
+    const productWithImage = {
+      ...newProduct,
+      image: imageUrl,
+      itemId: newProductRef.id
     };
     await setDoc(newProductRef, productWithImage);
     navigate('/products'); // Redirect to products page after adding the product
@@ -69,11 +69,11 @@ const AddProduct = () => {
         <textarea name="description" placeholder="Description" value={newProduct.description} onChange={handleInputChange} required></textarea>
         <input type="number" name="price" placeholder="Price" value={newProduct.price} onChange={handleInputChange} required />
         <input type="number" name="quantity" placeholder="Quantity" value={newProduct.quantity} onChange={handleInputChange} required />
-        <select  name="category" value={newProduct.category} onChange={handleInputChange} required>
-            <option value=''>Select Category </option>
-            {categories.map((category, index) =>(
-                <option key={index} value={category}>{category}</option>
-            ))}
+        <select name="category" value={newProduct.category} onChange={handleInputChange} required>
+          <option value=''>Select Category</option>
+          {categories.map((category, index) => (
+            <option key={index} value={category}>{category}</option>
+          ))}
         </select>
         <button type="submit">Add Product</button>
       </form>

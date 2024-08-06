@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { db, storage, uploadImage } from '../../firebase'; // Ensure you import your Firebase config
-import { collection, addDoc } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { db, storage } from '../../firebase'; 
+import { collection, addDoc, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Announcement.css';
 
 const Announcement = () => {
@@ -11,6 +11,28 @@ const Announcement = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [nextNumber, setNextNumber] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchNextNumber = async () => {
+      try {
+        const q = query(collection(db, 'Announcements'), orderBy('Number', 'desc'), limit(1));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+          setNextNumber(1);
+        } else {
+          const latestAnnouncement = querySnapshot.docs[0].data();
+          setNextNumber(latestAnnouncement.Number + 1);
+        }
+      } catch (error) {
+        console.error('Error fetching the latest announcement number:', error);
+        setError('Failed to load announcements. Please try again.');
+      }
+    };
+
+    fetchNextNumber();
+  }, []);
 
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
@@ -32,7 +54,7 @@ const Announcement = () => {
       let imageUrl = '';
 
       if (image) {
-        const storageRef = ref(storage, `announcements/${image.name}`);
+        const storageRef = ref(storage, `Announcement/${image.name}`);
         await uploadBytes(storageRef, image);
         imageUrl = await getDownloadURL(storageRef);
       }
@@ -40,12 +62,15 @@ const Announcement = () => {
       await addDoc(collection(db, 'Announcements'), {
         announcement,
         imageUrl,
-        timestamp: new Date(),
+        Number: nextNumber,
       });
 
       setSuccess('Announcement posted successfully');
       setAnnouncement('');
       setImage(null);
+
+      // Navigate to dashboard
+      navigate('/');
     } catch (error) {
       console.error('Error posting announcement:', error);
       setError('Failed to post announcement. Please try again.');
@@ -71,12 +96,9 @@ const Announcement = () => {
             required
           ></textarea>
         </div>
-        
-        <Link to='/'>
-            <button type="submit" disabled={loading}>
-                {loading ? 'Posting...' : 'Submit'}
-            </button>
-        </Link>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Posting...' : 'Submit'}
+        </button>
       </form>
     </div>
   );

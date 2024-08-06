@@ -49,23 +49,29 @@ export const Orders = () => {
             <th>Item IDs</th>
             <th>Order Address</th>
             <th>Payment Number</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        <Link to='/processing' >
-            <tbody>
-            {orders.map(order => (
-                <tr key={order.id}>
-                <td>{order.productName}</td>
-                <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-                <td>{order.emailAddress}</td>
-                <td>{order.itemCount}</td>
-                <td>{order.itemId}</td>
-                <td>{order.orderAddress}</td>
-                <td>{order.paymentNumber}</td>
-                </tr>
-            ))}
-            </tbody>
-        </Link>
+        <tbody>
+          {orders.map(order => (
+            <tr key={order.id}>
+              <td>{order.productName}</td>
+              <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+              <td>{order.emailAddress}</td>
+              <td>{order.itemCount}</td>
+              <td>{order.itemId}</td>
+              <td>{order.orderAddress}</td>
+              <td>{order.paymentNumber}</td>
+              <td>
+                { order.distributor === "none" ?(
+                  <Link to={`/processing/${order.id}`}>Process</Link>
+                ) : (
+                  <span>Delivered</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
