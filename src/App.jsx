@@ -15,6 +15,7 @@ import Signup from "./components/Authentication/Signup";
 import Orders from "./components/Orders/Orders";
 import Announcement from "./components/Announcement/Announcement";
 import Processing from "./components/Processing/Processing";
+import Message from "./components/Message/Message";
 
 
 
@@ -45,6 +46,7 @@ function App() {
             <Route path="/orders" element={<Orders/>} />
             <Route path="/announcement" element={<Announcement/>} />
             <Route path="/processing/:id" element={<Processing/>} />
+            <Route path="/message" element={<Message/>} />
           </Route>
         </Routes>
 

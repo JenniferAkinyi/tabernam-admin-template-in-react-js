@@ -1,0 +1,13 @@
+.message-container {
+    padding: 20px;
+  }
+  
+  .alert {
+    color: red;
+    font-weight: bold;
+    border: 1px solid red;
+    padding: 10px;
+    background-color: #ffcccc;
+    border-radius: 5px;
+  }
+  

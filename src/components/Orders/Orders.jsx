@@ -66,7 +66,7 @@ export const Orders = () => {
                 { order.distributor === "none" ?(
                   <Link to={`/processing/${order.id}`}>Process</Link>
                 ) : (
-                  <span>Delivered</span>
+                  <span>To Be Delivered</span>
                 )}
               </td>
             </tr>

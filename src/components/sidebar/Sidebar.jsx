@@ -99,6 +99,14 @@ const Sidebar = () => {
                 <span className="menu-link-text">Announcement</span>
               </Link>
             </li>
+            <li className="menu-item">
+              <Link to="/message" className="menu-link">
+                <span className="menu-link-icon">
+                  <MdOutlineMessage size={18} />
+                </span>
+                <span className="menu-link-text">Admin Message</span>
+              </Link>
+            </li>
           </ul>
         </div>
 

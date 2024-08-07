@@ -10,8 +10,8 @@ const Update = () => {
   const [product, setProduct] = useState({
     name: "",
     price: "",
-    quantity: 0,
-    addQuantity: 0,
+    quantity: "0",
+    addQuantity: "0",
     category: "",
     pictureUrl: ""
   });
@@ -36,7 +36,7 @@ const Update = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const docRef = doc(db, "Products/Fertilizer/Available", id);
-    const updatedQuantity = parseInt(product.quantity) + (parseInt(product.addQuantity) || 0);
+    const updatedQuantity = (parseInt(product.quantity) + (parseInt(product.addQuantity) || 0)).toString();
     await updateDoc(docRef, { ...product, quantity: updatedQuantity });
     navigate('/products'); 
   };
@@ -71,7 +71,7 @@ const Update = () => {
         />
         <label>Current Quantity</label>
         <input
-          type="number"
+          type="text"
           name="quantity"
           placeholder="Quantity"
           value={product.quantity}
@@ -81,7 +81,7 @@ const Update = () => {
         />
         <label>Add Quantity</label>
         <input
-          type="number"
+          type="text"
           name="addQuantity"
           placeholder="Add Quantity"
           value={product.addQuantity}
