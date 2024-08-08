@@ -14,7 +14,7 @@ import {
   MdOutlineSettings,
   MdOutlineShoppingBag,
 } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./Sidebar.scss";
 import { SidebarContext } from "../../context/SidebarContext";
 
@@ -25,7 +25,7 @@ const Sidebar = () => {
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
   const navbarRef = useRef(null);
 
-  // closing the navbar when clicked outside the sidebar area
+  // Closing the navbar when clicked outside the sidebar area
   const handleClickOutside = (event) => {
     if (
       navbarRef.current &&
@@ -35,12 +35,12 @@ const Sidebar = () => {
       closeSidebar();
     }
   };
-  
+
   const handleLogout = () => {
-    //logout logic here
+    // Logout logic here
     console.log('logging out');
     naviagte('/login');
-  }
+  };
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -56,7 +56,7 @@ const Sidebar = () => {
     >
       <div className="sidebar-top">
         <div className="sidebar-brand">
-          <img src='' alt="" />
+          <img src="" alt="" />
           <span className="sidebar-brand-text">Yieldmax AdminDash</span>
         </div>
         <button className="sidebar-close-btn" onClick={closeSidebar}>
@@ -67,69 +67,66 @@ const Sidebar = () => {
         <div className="sidebar-menu">
           <ul className="menu-list">
             <li className="menu-item">
-              <Link to="/" className="menu-link active">
+              <NavLink to="/" className="menu-link" activeclassname="active">
                 <span className="menu-link-icon">
                   <MdOutlineGridView size={18} />
                 </span>
                 <span className="menu-link-text">Dashboard</span>
-              </Link>
+              </NavLink>
             </li>
 
             <li className="menu-item">
-              <Link to="/products" className="menu-link">
+              <NavLink to="/products" className="menu-link" activeclassname="active">
                 <span className="menu-link-icon">
                   <MdOutlineShoppingBag size={20} />
                 </span>
                 <span className="menu-link-text">Products Inventory</span>
-              </Link>
+              </NavLink>
             </li>
             <li className="menu-item">
-              <Link to="/orders" className="menu-link">
+              <NavLink to="/orders" className="menu-link" activeclassname="active">
                 <span className="menu-link-icon">
                   <MdOutlinePeople size={20} />
                 </span>
                 <span className="menu-link-text">Customer Orders</span>
-              </Link>
+              </NavLink>
             </li>
             <li className="menu-item">
-              <Link to="/announcement" className="menu-link">
+              <NavLink to="/announcement" className="menu-link" activeclassname="active">
                 <span className="menu-link-icon">
                   <MdOutlineMessage size={18} />
                 </span>
                 <span className="menu-link-text">Announcement</span>
-              </Link>
+              </NavLink>
             </li>
             <li className="menu-item">
-              <Link to="/message" className="menu-link">
+              <NavLink to="/message" className="menu-link" activeclassname="active">
                 <span className="menu-link-icon">
                   <MdOutlineMessage size={18} />
                 </span>
                 <span className="menu-link-text">Admin Message</span>
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </div>
 
         <div className="sidebar-menu sidebar-menu2">
           <ul className="menu-list">
-            
-
-            
             <li className="menu-item">
               {isLoggedIn ? (
-                <Link to="/login" onClick={handleLogout} className="menu-link">
+                <NavLink to="/login" onClick={handleLogout} className="menu-link" activeclassname="active">
                   <span className="menu-link-icon">
                     <MdOutlineLogout size={20} />
                   </span>
                   <span className="menu-link-text">Logout</span>
-                </Link>
+                </NavLink>
               ) : (
-                <Link to="/login" className="menu-link">
+                <NavLink to="/login" className="menu-link" activeclassname="active">
                   <span className="menu-link-icon">
                     <MdOutlineLogin size={20} />
                   </span>
                   <span className="menu-link-text">Login</span>
-                </Link>
+                </NavLink>
               )}
             </li>
           </ul>

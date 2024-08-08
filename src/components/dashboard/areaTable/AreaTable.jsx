@@ -5,8 +5,8 @@ import AreaTableAction from "./AreaTableAction";
 import './AreaTable.scss'; 
 
 const TABLE_HEADS = [
-  "Product Name",
-  "Item ID",
+  "Product Names",
+  "Order ID",
   "Date",
   "Email Address",
   "Payment Number",
@@ -23,8 +23,26 @@ const AreaTable = () => {
         // Reference to the orders collection
         const ordersRef = collection(db, 'Orders', 'Customer', 'order');
         const ordersSnapshot = await getDocs(ordersRef);
-        const ordersList = ordersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setOrders(ordersList);
+
+        //process orders
+        const ordersList = ordersSnapshot.docs.map(doc => {
+          const data = doc.data();
+          const products = data.products || [];  
+        
+        //get the names
+        const productNames = products.map(products => products.productName).join(', ');
+          
+        return {
+          id: doc.id,
+          ...data,
+          products: productNames,
+          
+        }
+      });
+      // Sort the orders by orderDate in descending order (most recent first)
+      const sortedOrders = ordersList.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+
+        setOrders(sortedOrders);
       } catch (error) {
         console.error('Error fetching orders:', error);
         setError('Failed to load orders. Please try again.');
@@ -63,8 +81,8 @@ const AreaTable = () => {
               // Ensure these fields are properly named in your data
               return (
                 <tr key={order.id}>
-                  <td>{order.productName}</td>
-                  <td>{order.itemId}</td>
+                  <td>{order.products}</td>
+                  <td>{order.orderId}</td>
                   <td>{new Date(order.orderDate).toLocaleDateString()}</td>
                   <td>{order.emailAddress}</td>
                   <td>{order.paymentNumber}</td>

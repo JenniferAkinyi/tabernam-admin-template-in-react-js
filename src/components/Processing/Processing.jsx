@@ -17,17 +17,29 @@ const Processing = () => {
     const fetchOrder = async () => {
       try {
         const orderRef = doc(db, 'Orders', 'Customer', 'order', id);
-        const orderSnapshot = await getDoc(orderRef);
-        if (orderSnapshot.exists()) {
-          const orderData = { id: orderSnapshot.id, ...orderSnapshot.data() };
-          setOrder(orderData);
-          autoSelectDelivery(orderData.orderAddress);
+        const orderSnap = await getDoc(orderRef);
+
+        if (orderSnap.exists()) {
+          const data = orderSnap.data();
+          const products = data.products || [];
+
+          // Get the names
+          const productNames = products.map(product => product.productName).join(', ');
+          
+          setOrder({
+            id: orderSnap.id,
+            ...data,
+            productNames
+          });
+
+          // Auto-select a delivery user based on order address
+          autoSelectDelivery(data.orderAddress);
         } else {
-          setError('Order not found');
+          setError('Order not found.');
         }
       } catch (error) {
         console.error('Error fetching order:', error);
-        setError('Failed to load order. Please try again.');
+        setError('Failed to load the order. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -67,7 +79,7 @@ const Processing = () => {
 
     try {
       const orderRef = doc(db, 'Orders', 'Customer', 'order', id);
-      await updateDoc(orderRef, { distributor: selectedDelivery, served: '2' }); // Convert `served` to string
+      await updateDoc(orderRef, { distributor: selectedDelivery, served: '1' }); // Convert `served` to string
       navigate('/orders'); // Redirect to orders page after updating
     } catch (error) {
       console.error('Error updating order:', error);
@@ -98,7 +110,7 @@ const Processing = () => {
           </div>
           <div className="form-group">
             <label>Product Name:</label>
-            <input type="text" value={order.productName} readOnly />
+            <input type="text" value={order.productNames} readOnly />
           </div>
           <div className="form-group">
             <label>Payment Number:</label>

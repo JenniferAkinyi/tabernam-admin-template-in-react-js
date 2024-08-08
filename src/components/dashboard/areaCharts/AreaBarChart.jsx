@@ -23,7 +23,7 @@ const AreaBarChart = () => {
     const fetchData = async () => {
       try {
         // Reference to the collection in Firestore
-        const productsRef = collection(db, 'SalesReport','2024-06-17', 'Items');
+        const productsRef = collection(db, 'SalesReport','currentDate', 'Items');
         const productsSnapshot = await getDocs(productsRef);
 
         // Sum all soldQuantity values
@@ -78,7 +78,7 @@ const AreaBarChart = () => {
     },
     {
       month: "Jun",
-      totalPrice: totalPrice,
+      totalPrice: '',
     },
     {
       month: "Jul",
